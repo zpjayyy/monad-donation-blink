@@ -9,9 +9,10 @@ const headers = {
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Access-Control-Allow-Headers":
     "Content-Type, x-blockchain-ids, x-action-version",
+  "Access-Control-Expose-Headers": "x-blockchain-ids, x-action-version",
   "Content-Type": "application/json",
   "x-blockchain-ids": blockchain,
-  "x-action-version": "2.0",
+  "x-action-version": "2.4",
 };
 
 export const OPTIONS = async () => {
@@ -23,7 +24,7 @@ export const OPTIONS = async () => {
 export const GET = async (req: Request) => {
   const response: ActionGetResponse = {
     type: "action",
-    icon: `${new URL("/donation-mon.png", req.url).toString}`,
+    icon: `${new URL("/donation-mon.png", req.url).toString()}`,
     label: "1 MON",
     title: "Donate MON",
     description:
