@@ -1,4 +1,6 @@
-import { ActionGetResponse } from "@solana/actions";
+import { ActionGetResponse, ActionPostResponse } from "@solana/actions";
+import { parseEther } from "viem";
+import { serialize } from "wagmi";
 
 const blockchain = "eip155:10143";
 
@@ -62,4 +64,39 @@ export const GET = async (req: Request) => {
     status: 200,
     headers,
   });
+};
+
+const donationWallet = "0x335073168449d687f2df7373b61b6a398c852248";
+
+export const POST = async (req: Request) => {
+  try {
+    const url = new URL(req.url);
+    const amount = url.searchParams.get("amount");
+    if (!amount) {
+      throw new Error("amount is required");
+    }
+    const transaction = {
+      to: donationWallet,
+      value: parseEther(amount).toString(),
+      chainId: 10143,
+    };
+    const transactionJson = serialize(transaction);
+
+    const response: ActionPostResponse = {
+      type: "transaction",
+      transaction: transactionJson,
+      message: `Donating ${amount} MON`,
+    };
+
+    return new Response(JSON.stringify(response), {
+      status: 200,
+      headers,
+    });
+  } catch (e) {
+    console.error("error process request", e);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
+      status: 500,
+      headers,
+    });
+  }
 };
